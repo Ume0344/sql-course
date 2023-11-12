@@ -87,3 +87,57 @@ CREATE TABLE employees (
 
 #### Schema
 It defines how the data is organized in database. Datatype, names of field, number of columns are part of schema.
+
+### CRUD (Create, Read, Update, Delete)
+HTTP POST - CREATE (CREATE / INSERT)
+HTTP GET - READ (SELECT)
+HTTP PUT - UPDATE (UPDATE)
+HTTP DELETE - DELETE (DELETE)
+
+#### INSERT
+```
+INSERT INTO employees(id, name, title)
+VALUES (1, 'Alex', 'Doctor');
+```
+
+A SQL query written in Go;
+```
+sqlQuery := fmt.Sprintf(`
+INSERT INTO users(name, age, country_code)
+VALUES ('%s', %v, %s);
+`, user.Name, user.Age, user.CountryCode)
+```
+
+#### COUNT
+`*` is the wildcard.
+```
+SELECT COUNT(*) FROM users;
+```
+#### WHERE
+```
+SELECT username FROM users WHERE is_admin=true;
+```
+```
+SELECT name FROM users WHERE first_name IS NULL;
+```
+```
+SELECT name FROM users WHERE first_name IS NOT NULL;
+```
+#### DELETE
+```
+DELETE FROM employees
+where id=234;
+```
+#### DataBase Backup
+Some options;
+- Take snapshots of database on daily or hourly bases.
+- Have a replica which keeps track of all the activity happe
+
+ning in database.
+- Soft delete - That you mark a record as deleted by setting a flag (i.e, a column of *deleted* = true)
+#### Update
+```
+UPDATE employees
+SET job_title = 'Cloud Engineer', salary = 200000
+WHERE id = 234;
+```
