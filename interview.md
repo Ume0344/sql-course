@@ -141,3 +141,151 @@ UPDATE employees
 SET job_title = 'Cloud Engineer', salary = 200000
 WHERE id = 234;
 ```
+
+### ORM (Object Relational Mapping)
+A tool which allows to interact with database using a programming language.
+In go, it can looks like this;
+```
+// this struct represent a table
+type User struct {
+    ID int
+    Name string
+    isAdmin bool
+}
+
+// using ORM
+user := User{
+    ID: 10,
+    Name: 'Max';
+    isAdmin: false,
+}
+
+db.Create(user)
+```
+Or;
+```
+// Using straight SQL 
+user := User{
+    ID: 10,
+    Name: 'Max';
+    isAdmin: false,
+}
+
+db.Exec("INSERT INTO users (id, name, is_admin) VALUES (?, ?, ?);",
+    user.ID, user.Name, user.IsAdmin)
+```
+Note: The '?' in the SQL query you provided is a placeholder for parameterized queries. It's a way to safely include variables or values in the SQL statement without directly concatenating them into the string. Parameterized queries help prevent SQL injection attacks by ensuring that user inputs are treated as data rather than executable SQL code.
+
+[Should we use ORM?](https://www.boot.dev/assignments/93443c8b-368d-4021-bbf1-939463e34d28)
+In production, we usually use ORM but soemtimes we use straight SQL to run complex queries
+
+### Basic Queries
+
+#### AS Clause
+An AS clause allows us to "alias" a piece of data in our query. The alias only exists for the duration of the query.
+```
+SELECT employee_id AS id, employee_name AS name FROM employees;
+```
+### SQL Functions
+IIF;
+```
+IIF(carA > carB, "Car A is bigger", "Car B is bigger")
+```
+Exercise:
+We need to look through CashPal's transaction data and determine whether or not any of the transactions need to be audited.
+
+Return all the data from the transactions table, and add an extra column at the end called audit.
+
+If a row's was_successful field is true, the audit field should say "No action required".
+If a row's was_successful field is false, the audit field should say "Perform an audit".
+
+```
+SELECT *, 
+  IIF(was_successful, "No action required", "Perform an audit") AS audit
+  FROM transactions;
+
+```
+#### BETWEEN
+```
+SELECT employee_name, salary FROM employees
+WHERE salary BETWEEN 50000 and 70000;
+```
+```
+SELECT employee_name, salary FROM employees
+WHERE salary NOT BETWEEN 50000 and 70000;
+```
+#### DISTINCT
+```
+SELECT DISTINCT departments FROM employees;
+```
+#### Logical Operators
+*AND*
+```
+SELECT product_name, quantity, shipment_status
+    FROM products
+    WHERE shipment_status = 'pending'
+    AND quantity BETWEEN 0 and 10;
+```
+```
+SELECT * 
+  FROM users
+  WHERE country_code='CA' 
+  AND age<18;
+```
+*OR*
+```
+SELECT product_name, quantity, shipment_status
+    FROM products
+    WHERE shipment_status = 'out of stock'
+    OR quantity BETWEEN 10 and 100;
+```
+```
+SELECT count(*) AS junior_count 
+  FROM users
+  WHERE (country_code='US' OR country_code='CA')
+  AND age < 18;
+```
+#### IN
+IN returns true or false if the first operand matches any of the values in the second operand. The IN operator is a shorthand for multiple OR conditions.
+```
+SELECT product_name, shipment_status
+    FROM products
+    WHERE shipment_status IN ('shipped', 'preparing', 'out of stock');
+```
+#### LIKE
+Sometimes we don't have the luxury of knowing exactly what it is we need to query. Have you ever wanted to look up a song or a video but you only remember part of the name? SQL provides us an option for when we're in situations LIKE this.
+**% Operator**
+It matches 0 or more characters.
+product starts with 'banana'
+```
+SELECT * FROM products
+WHERE product_name LIKE 'banana%';
+``` 
+product ends with 'banana'
+```
+SELECT * FROM products
+WHERE product_name LIKE '%banana';
+``` 
+product contains'banana'
+```
+SELECT * FROM products
+WHERE product_name LIKE '%banana%';
+```
+**_ Operator**
+It matches only a single character.
+```
+SELECT * FROM products
+WHERE product_name LIKE '_oot';
+```
+Above query results in 'boot', 'root'.
+```
+SELECT * FROM products
+WHERE product_name LIKE '__oot';
+```
+Above query results in 'shoot', 'broot'
+
+Exercise: HR has been able to narrow down their query further! They want a report of all user's whose names that start with Al and are exactly 5 characters long.
+```
+SELECT * FROM users
+WHERE name LIKE 'Al___';
+```
