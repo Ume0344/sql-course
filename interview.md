@@ -289,3 +289,119 @@ Exercise: HR has been able to narrow down their query further! They want a repor
 SELECT * FROM users
 WHERE name LIKE 'Al___';
 ```
+
+## Structuring
+### LIMIT
+Give us only number of rows mentioned after LIMIT.
+```
+SELECT first_name, age
+FROM Customers
+LIMIT 2;
+```
+Will give 2 rows.
+
+### ORDER BY
+It sorts the data (ascendingly by default) and go hand in hand with LIMIT.
+```
+SELECT first_name, age
+FROM Customers
+ORDER BY age;
+```
+For sorting in descending order,
+```
+SELECT first_name, age
+FROM Customers
+ORDER BY age desc;
+```
+Get all records from `Customers` where age is between 25 and 35, order it in descending order and limit it to 2 rows.
+```
+SELECT *
+FROM Customers
+Where age Between 25 and 35
+ORDER By age desc
+LIMIT 2;
+```
+## Aggregations
+A single value derived from combining other large amount of values. i.e, COUNT. We use it when we need to calculate additional data from raw data stored in database. 
+
+### COUNT
+```
+SELECT COUNT(*)
+FROM Customers
+Where age Between 25 and 35
+ORDER By age desc
+LIMIT 2;
+``` 
+
+### SUM
+To get sum of a column;
+```
+SELECT SUM(age)
+FROM Customers
+Where age Between 25 and 35;
+```
+### MAX
+Get max value from a column;
+```
+SELECT first_name, MAX(age)
+FROM Customers
+Where age Between 25 and 35;
+```
+### MIN
+Get min value from a column;
+```
+SELECT first_name, min(age)
+FROM Customers;
+```
+### GROUP BY (Important concept)
+It collects the rows into groups and each group contains rows that have identical value by which grouping is done.
+```
+SELECT *, count(*) as total
+FROM shippings
+group by status;
+```
+This will summarize how many distinct shipping status are there and the number of rows having the corresponding status.
+### AVERAGE
+Get the average of Non-Null values;
+```
+SELECT avg(age)
+FROM customers;
+```
+### HAVING
+To filter the results of `GROUP BY`, we use `HAVING`. It is like `WHERE` clause. The difference is `WHERE` clause filters rows before grouping but `HAVING` filters out after grouping the data through `GROUP BY` clause on groups.
+```
+SELECT *, count(*)
+FROM shippings
+group by status
+having status='Pending';
+```
+```
+SELECT sender_id, sum(amount) as balance
+from transactions
+where note LIKE '%lunch%'
+group by sender_id
+order by balance
+having balance > 20;
+```
+### ROUND
+To round the numbers;
+```
+select round(avg(age)) 
+from customers
+where country='PK' 
+```
+
+## SubQueries
+Sometimes, a single query is not enough to retrieve the data, so apply another query on a query. Anything inside `()` is consider as main query on which another query is applied. 
+```
+select * from customers
+where first_name =(
+select first_name from customers
+where age=25); 
+```
+```
+select * from orders
+where customer_id = (
+select customer_id from customers
+where first_name='John' and last_name='Doe');
+```
