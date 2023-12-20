@@ -405,3 +405,77 @@ where customer_id = (
 select customer_id from customers
 where first_name='John' and last_name='Doe');
 ```
+
+## Normalization
+
+### 3 types of Relationships between entities
+1- One to One 
+- Where each entity has one and only one relationship with other entity. For example, A student can have only one last name.
+
+2- One to Many
+- Where each entity has relationship with multiple entities. For example, A student can have multiple courses. Here, we would define course_id as foreign key to student table.
+
+- How to define a foreign key in a table
+```
+CREATE TABLE users (
+    id  INTEGER PRIMARY KEY,
+    name TEXT,
+    age INTEGER
+);
+CREAT TABLE countries (
+    id  INTEGER PRIMARY KEY,
+    country_code TEXT ,
+    user_id TEXT,
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+);
+```
+
+3- Many to Many 
+- Where many entities has relationship with many other entities. For example, A student can have multiple classes and a class can have multiple students. One more example could be that a supplier can have many products and also a product can be supplied by many suppliers.
+
+- UNIQUE (used for many-many relationship), a constraint to have unique rows having one and only one combination of columns in the table. The following example shows that table would not have multiple rows with same product_id and supplier_id. 
+```
+CREATE TABLE product_suppliers (
+    product_id INTEGER,
+    supplier_id INTEGER,
+    UNIQUE(product_id, supplier_id)
+);
+```
+
+### Database Normalization
+Less normalized -> less data integrity, could have duplicate data.
+
+More normalized -> more data integrity, less duplicate data.
+
+**1st Normal Form (least normalized form)**:
+1- Every row must have unique primary  key.
+2- There should not be any nested table (table within table).
+
+**2nd Normal Form**:
+1- All columns that are not part of primary key should be only dependent on entire primary key (primary key could be of two columns).
+
+**3rd Normal Form**:
+
+1- All the columns not in primary key are dependent only on primary key. 
+
+**Boyce-Codd Normal Form (most normalized form)**:
+
+1- The column which is part of primary key should not be dependent on any other column which is not a part of primary column. 
+
+*In production we dont care alot about 2nd, third and BC normal form*
+
+**Data Integrity** -> Refers to accuracy and consistency of data.
+
+**Data Redundancy** -> Same piece of data is stored in multiple places.
+
+### RULES OF THUMB FOR DATABASE DESIGN
+1-Every table should always have a unique identifier (primary key)
+
+2-90% of the time, that unique identifier will be a single column named id
+
+3-Avoid duplicate data
+
+4-Avoid storing data that is completely dependent on other data. Instead, compute it on the fly when you need it.
+
+5-Keep your schema as simple as you can. Optimize for a normalized database first. Only denormalize for speed's sake when you start to run into performance problems.
