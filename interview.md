@@ -479,3 +479,104 @@ More normalized -> more data integrity, less duplicate data.
 4-Avoid storing data that is completely dependent on other data. Instead, compute it on the fly when you need it.
 
 5-Keep your schema as simple as you can. Optimize for a normalized database first. Only denormalize for speed's sake when you start to run into performance problems.
+
+## Joins
+To combine the columns of two or more tables.
+
+### Inner Join (Join)
+- Returns rows of table A that have matching records in table B .
+```
+SELECT *
+FROM employees
+INNER JOIN departments 
+ON employees.department_id = departments.id;
+```
+
+### Left Join (OUTER JOIN)
+- Returns all rows of table A and matching rows of Table B.
+```
+SELECT *
+FROM employees
+LEFT JOIN departments
+ON employees.department_id = department.id
+```
+
+### Right Join (OUTER JOIN)
+- Returns all rows of table B and matching rows of Table A.
+- It is same as left join but the position of tables are swapped.
+
+### Full Join
+- Returns all rows in table A and table B.
+
+### Self Join
+- Joining table to itself.
+```
+SELECT * FROM employees e
+JOIN employees m 
+ON e.report_to = m.employee.id
+```
+### UNION
+- To join data returned from multiple queries.
+```
+SELECT order_id, order_date, 'Active'
+FROM orders
+WHERE order_date >= '2023-01-01'
+UNION
+SELECT order_id, order_date, 'Archived'
+FROM orders
+WHERE order_date < '2023-01-01'
+
+```
+
+
+### Exercise 
+```
+The CashPal team needs a report on all the transactions a user has made. Join the users and transactions tables on users.id and transactions.user_id.
+
+Your query should return 3 fields:
+
+A user's name as name
+The sum of all of their transaction amounts as sum
+The count of all of their transactions as count
+Be sure to group the data by the user's id.
+Be sure to order the data by the sum field in descending order.
+Be sure to still return user records of users who have no transactions.
+```
+**Solution**
+```
+SELECT users.name, 
+ sum(transactions.amount) as sum,
+ count(transactions.id) as count
+ FROM users
+ LEFT JOIN transactions 
+ ON users.id = transactions.user_id
+ GROUP BY users.id
+ ORDER BY sum DESC;
+```
+
+### Exercise
+```
+Our front-end team is finalizing the profile page for CashPal. We need to write a query that returns all the user data they need for an individual user's profile. The query needs to return the following fields:
+
+The user's id
+The user's name
+The user's age
+The user's username
+The user's country name, renamed to country_name
+The sum of the user's transaction amounts, renamed to balance
+Return only a single user record - specifically the one with id=6
+```
+**Solution**
+```
+SELECT users.id, users.name,
+  users.age, users.username,
+  countries.name as country_name,
+  SUM(transactions.amount) as balance
+  FROM users
+  LEFT JOIN countries 
+  ON countries.country_code = users.country_code
+  LEFT JOIN transactions
+  ON transactions.user_id = users.id
+  where users.id = 6
+  GROUP BY users.id;
+```
