@@ -580,3 +580,54 @@ SELECT users.id, users.name,
   where users.id = 6
   GROUP BY users.id;
 ```
+
+## INSERT and UPDATE
+
+### INSERT
+To insert data to table.
+
+Inserting a single row;
+```
+INSERT INTO customers (first_name, last_name, age, address)
+VALUES ('John', 'Smith, '23', 'ZWeg1')
+```
+
+Inserting multiple rows;
+```
+INSERT INTO customers (first_name, last_name, age, address)
+VALUES ('John', 'Smith, 23, 'ZWeg1'),
+       ('Allen', 'Luther', 12, 'Wund23')
+```
+
+Inserting hierarchichal data means if we want to add newly generated id of one table to another table. Forexample, if we created a new order and inserted the order id into orders table and also want to add order id to products table.
+```
+INSERT INTO orders (order_id, customer_id, name)
+VALUES (DEFAULT, 1, 'Crock')
+
+INSERT INTO products (order_id, product_id, quantity)
+VALUES (LAST_INSERT_ID(), 2, 2)
+```
+
+LAST_INSERT_ID() is a built-in function in MySQL which keeps track of last generated id.
+
+### UPDATE
+To update a single row.
+```
+UPDATE customers
+SET last_name='David', age=45
+WHERE customer_id=3;
+```
+```
+UPDATE customers
+SET last_name='David', age_in_months=age_in_years * 12
+WHERE customer_id=3;
+```
+
+To update multiple rows;
+
+This example will update column contact_person in all rows where customer_country='China'
+```
+UPDATE customers
+SET contact_person='John'
+WHERE customer_country='China';
+```
